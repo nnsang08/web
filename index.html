@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Thư viện tri thức - Kho sách online</title>
+    <!-- Google Fonts và Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #fef9ef; /* nền kem ấm */
+            color: #2c3e2f;
+            scroll-behavior: smooth;
+        }
+
+        /* Màu chủ đạo: xanh than đậm, nâu nhạt */
+        :root {
+            --primary: #2c553c;
+            --primary-dark: #1e3b2a;
+            --accent: #c7a17a;
+            --accent-light: #e7d4bf;
+            --gray-bg: #f8f4ea;
+            --text-dark: #2e3b2c;
+            --shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        /* Header */
+        header {
+            background: white;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo h2 {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.6rem;
+        }
+        .logo span {
+            color: var(--accent);
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links li a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #3c5a3e;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+        .nav-links li a:hover, .nav-links li a.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 4px;
+        }
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border-radius: 50%;
+            padding: 0px 6px;
+            min-width: 20px;
+            text-align: center;
+        }
+        /* banner */
+        .banner {
+            background: linear-gradient(135deg, rgba(44,85,60,0.9), rgba(31,65,42,0.85)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center 30%;
+            padding: 5rem 2rem;
+            text-align: center;
+            color: white;
+        }
+        .banner h1 {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+        .banner p {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+            opacity: 0.9;
+        }
+        .btn-primary {
+            background: var(--accent);
+            border: none;
+            padding: 12px 32px;
+            font-weight: 600;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #2e3b2c;
+            transition: 0.2s;
+        }
+        .btn-primary:hover {
+            background: #b8895c;
+            transform: scale(1.02);
+        }
+        /* stats */
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: 3rem auto;
+            text-align: center;
+            gap: 2rem;
+        }
+        .stat-item h3 {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        /* section sách */
+        .section {
+            max-width: 1280px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            border-left: 6px solid var(--accent);
+            padding-left: 1rem;
+        }
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+        .book-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+        }
+        .book-cover {
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+            background-color: #e9e2d4;
+        }
+        .book-info {
+            padding: 1rem;
+        }
+        .book-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .book-author {
+            font-size: 0.85rem;
+            color: #7f6b5a;
+            margin: 6px 0;
+        }
+        .book-status {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 8px 0;
+        }
+        .available { color: #2c7a4a; }
+        .unavailable { color: #b13e3e; }
+        .book-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .btn-sm {
+            background: #f0ede8;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .btn-borrow {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-borrow:hover {
+            background: var(--primary-dark);
+        }
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            width: 90%;
+            border-radius: 28px;
+            padding: 1.8rem;
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+        /* Cart page & giỏ */
+        .cart-items-container {
+            background: white;
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 12px 0;
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 40px;
+            z-index: 1100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+        }
+        footer {
+            background: #2e3b2c;
+            color: #ddd;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+        #searchInput, #categoryFilter {
+            padding: 10px 16px;
+            border-radius: 40px;
+            border: 1px solid #ddd;
+            background: white;
+            outline: none;
+        }
+        @media (max-width: 768px) {
+            .nav-container { flex-direction: column; gap: 1rem; }
+            .nav-links { gap: 1rem; }
+            .banner h1 { font-size: 2rem; }
+        }
+        .page {
+            display: none;
+        }
+        .active-page {
+            display: block;
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 3rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="nav-container">
+        <div class="logo">
+            <h2>📚 <span>Thư viện</span> Tri thức</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" data-page="home" class="nav-link active">Trang chủ</a></li>
+            <li><a href="#" data-page="books" class="nav-link">Danh sách sách</a></li>
+            <li><a href="#" data-page="about" class="nav-link">Giới thiệu</a></li>
+            <li><a href="#" data-page="contact" class="nav-link">Liên hệ</a></li>
+        </ul>
+        <div class="user-actions">
+            <div id="loginSection" style="display: flex; align-items: center; gap: 1rem;">
+                <button id="loginBtn" class="btn-sm" style="background: var(--accent);">Đăng nhập</button>
+                <button id="registerBtn" class="btn-sm" style="background: var(--primary); color: white;">Đăng ký</button>
+            </div>
+            <div id="userSection" style="display: none; align-items: center; gap: 1rem;">
+                <span id="userName" style="font-weight: 500; color: var(--primary);"></span>
+                <button id="logoutBtn" class="btn-sm" style="background: #dc3545; color: white;">Đăng xuất</button>
+            </div>
+            <div class="cart-icon" id="cartIcon">
+                <i class="fas fa-shopping-basket"></i>
+                <span id="cartCounter" class="cart-count">0</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <!-- TRANG CHỦ -->
+    <div id="homePage" class="page active-page">
+        <div class="banner">
+            <h1>📖 Thư viện tri thức</h1>
+            <p>Khai mở thế giới qua từng trang sách</p>
+            <button class="btn-primary" id="exploreBtn">Khám phá ngay</button>
+        </div>
+        <div class="stats">
+<div class="stat-item"><h3>12,000+</h3><p>Đầu sách</p></div>
+            <div class="stat-item"><h3>2,500+</h3><p>Thành viên</p></div>
+            <div class="stat-item"><h3>15,000+</h3><p>Lượt mượn/tháng</p></div>
+        </div>
+        <div class="section">
+            <h2 class="section-title">✨ Sách nổi bật</h2>
+            <div id="featuredBooks" class="book-grid"></div>
+        </div>
+    </div>
+
+    <!-- TRANG DANH SÁCH SÁCH (có lọc + tìm kiếm) -->
+    <div id="booksPage" class="page">
+        <div class="section">
+            <h2 class="section-title">📚 Tất cả đầu sách</h2>
+            <div class="filter-bar">
+                <input type="text" id="searchInput" placeholder="🔍 Tìm theo tên sách..." style="flex:2; min-width: 180px;">
+                <select id="categoryFilter" style="flex:1; min-width: 140px;">
+                    <option value="all">Tất cả thể loại</option>
+                    <option value="Tiểu thuyết">Tiểu thuyết</option>
+                    <option value="Khoa học">Khoa học</option>
+                    <option value="Kỹ năng sống">Kỹ năng sống</option>
+                    <option value="Lịch sử">Lịch sử</option>
+                    <option value="Tâm lý">Tâm lý</option>
+                </select>
+            </div>
+            <div id="allBooksGrid" class="book-grid"></div>
+        </div>
+    </div>
+
+    <!-- GIỚI THIỆU -->
+    <div id="aboutPage" class="page">
+        <div class="section" style="background: white; border-radius: 32px; padding: 2rem;">
+            <h2 class="section-title">Về thư viện</h2>
+            <p style="font-size:1.1rem; line-height:1.5">Thư viện Tri thức được thành lập với sứ mệnh lan tỏa văn hóa đọc, kết nối tri thức. Chúng tôi cung cấp hơn 10.000 đầu sách đa dạng thể loại, không gian đọc hiện đại và dịch vụ mượn trực tuyến tiện lợi. Hãy tham gia cộng đồng yêu sách và khám phá những giá trị bất tận!</p>
+            <div style="margin-top:2rem; display: flex; gap: 1.5rem; flex-wrap:wrap;"><i class="fas fa-map-marker-alt"></i> 123 Đường Sách, Quận 1, TP.HCM <br><i class="fas fa-phone-alt"></i> 028 1234 5678</div>
+        </div>
+    </div>
+
+    <!-- LIÊN HỆ -->
+    <div id="contactPage" class="page">
+        <div class="section" style="background: white; border-radius: 32px; padding: 2rem;">
+            <h2 class="section-title">Liên hệ với chúng tôi</h2>
+            <p>📧 Email: support@thuvienthuc.vn</p>
+            <p>📞 Hotline: 1900 1009</p>
+            <p>🌐 Fanpage: fb.com/thuvienthuc</p>
+            <p>🏢 Địa chỉ: 123 Nguyễn Du, Quận 1, TP Hồ Chí Minh</p>
+            <div style="margin-top: 1rem;"><i class="fas fa-clock"></i> Giờ mở cửa: 8:00 - 20:00 (Thứ 2 - Chủ nhật)</div>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeLoginModal">&times;</span>
+            <h3><i class="fas fa-sign-in-alt"></i> Đăng nhập</h3>
+            <form id="loginForm">
+                <div style="margin-bottom: 1rem;">
+                    <label>Email:</label>
+                    <input type="email" id="loginEmail" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 4px;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label>Mật khẩu:</label>
+                    <input type="password" id="loginPassword" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 4px;">
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Đăng nhập</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">Chưa có tài khoản? <a href="#" id="switchToRegister" style="color: var(--primary);">Đăng ký ngay</a></p>
+        </div>
+    </div>
+
+    <!-- REGISTER MODAL -->
+    <div id="registerModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal" id="closeRegisterModal">&times;</span>
+            <h3><i class="fas fa-user-plus"></i> Đăng ký</h3>
+            <form id="registerForm">
+                <div style="margin-bottom: 1rem;">
+                    <label>Họ tên:</label>
+                    <input type="text" id="regName" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 4px;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label>Email:</label>
+                    <input type="email" id="regEmail" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 4px;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label>Mật khẩu:</label>
+                    <input type="password" id="regPassword" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 4px;">
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Đăng ký</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">Đã có tài khoản? <a href="#" id="switchToLogin" style="color: var(--primary);">Đăng nhập</a></p>
+        </div>
+    </div>
+
+    <!-- GIỎ MƯỢN MODAL -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeCartModal">&times;</span>
+            <h3>📦 Danh sách mượn</h3>
+            <div id="cartItemsList" class="cart-items-container"></div>
+            <div style="margin-top: 1rem; text-align: right;">
+                <button id="confirmBorrowBtn" class="btn-primary">Xác nhận mượn</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast thông báo -->
+    <div id="toastMsg" class="toast">✅ Thông báo</div>
+</main>
+
+<footer>
+    <p>© 2025 Thư viện Tri thức - Nơi nuôi dưỡng tâm hồn & tri thức.</p>
+    <p><i class="fas fa-envelope"></i> thuviendientu@thuvien.vn</p>
+</footer>
+
+<script>
+    // ---------- DỮ LIỆU NGƯỜI DÙNG FAKE ----------
+    const users = [
+        { id: 1, name: "Nguyễn Văn A", email: "user1@gmail.com", password: "123456" },
+        { id: 2, name: "Trần Thị B", email: "user2@gmail.com", password: "123456" }
+    ];
+
+    // Kiểm tra đăng nhập từ localStorage
+    let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
+    let isLoggedIn = !!currentUser;
+
+    function updateAuthUI() {
+        if (isLoggedIn && currentUser) {
+            document.getElementById("loginSection").style.display = "none";
+            document.getElementById("userSection").style.display = "flex";
+            document.getElementById("userName").textContent = currentUser.name;
+        } else {
+            document.getElementById("loginSection").style.display = "flex";
+            document.getElementById("userSection").style.display = "none";
+        }
+    }
+
+    function requireLogin(callback) {
+        if (!isLoggedIn) {
+            showToast("⚠️ Vui lòng đăng nhập để mượn sách!");
+            document.getElementById("loginModal").style.display = "flex";
+            return false;
+        }
+        return true;
+    }
+
+    // ---------- DỮ LIỆU SÁCH MẪU ----------
+    const booksData = [
+        { id: 1, title: "Nhà giả kim", author: "Paulo Coelho", category: "Tiểu thuyết", year: 1988, cover: "https://picsum.photos/id/20/300/200", status: "available", desc: "Hành trình tìm kiếm kho báu và lẽ sống.", pages: 208, publisher: "NXB Văn học" },
+        { id: 2, title: "Sapiens: Lược sử loài người", author: "Yuval Noah Harari", category: "Lịch sử", year: 2011, cover: "https://picsum.photos/id/24/300/200", status: "available", desc: "Lịch sử phát triển của nhân loại từ thời tiền sử.", pages: 512, publisher: "NXB Thế giới" },
+        { id: 3, title: "Đắc nhân tâm", author: "Dale Carnegie", category: "Kỹ năng sống", year: 1936, cover: "https://picsum.photos/id/26/300/200", status: "available", desc: "Nghệ thuật giao tiếp và ứng xử.", pages: 320, publisher: "NXB Tổng hợp" },
+        { id: 4, title: "Vũ trụ trong vỏ hạt dẻ", author: "Stephen Hawking", category: "Khoa học", year: 2001, cover: "https://picsum.photos/id/29/300/200", status: "unavailable", desc: "Những lý thuyết vật lý hiện đại.", pages: 240, publisher: "NXB Trẻ" },
+        { id: 5, title: "Tôi thấy hoa vàng trên cỏ xanh", author: "Nguyễn Nhật Ánh", category: "Tiểu thuyết", year: 2010, cover: "https://picsum.photos/id/30/300/200", status: "available", desc: "Tuổi thơ và ký ức miền quê.", pages: 380, publisher: "NXB Kim Đồng" },
+        { id: 6, title: "Atomic Habits", author: "James Clear", category: "Kỹ năng sống", year: 2018, cover: "https://picsum.photos/id/33/300/200", status: "available", desc: "Thay đổi thói quen nhỏ tạo đột phá lớn.", pages: 320, publisher: "NXB Lao động" },
+        { id: 7, title: "Lược sử thời gian", author: "Stephen Hawking", category: "Khoa học", year: 1988, cover: "https://picsum.photos/id/35/300/200", status: "available", desc: "Vũ trụ, lỗ đen và không gian.", pages: 256, publisher: "NXB Khoa học" },
+        { id: 8, title: "Cây cam ngọt của tôi", author: "José Mauro de Vasconcelos", category: "Tiểu thuyết", year: 1968, cover: "https://picsum.photos/id/39/300/200", status: "available", desc: "Câu chuyện xúc động về cậu bé Zezé.", pages: 232, publisher: "NXB Hội Nhà văn" },
+        { id: 9, title: "Dạy con làm giàu", author: "Robert Kiyosaki", category: "Kỹ năng sống", year: 1997, cover: "https://picsum.photos/id/42/300/200", status: "unavailable", desc: "Tư duy tài chính cho gia đình.", pages: 336, publisher: "NXB Trẻ" },
+        { id: 10, title: "Nghĩ giàu làm giàu", author: "Napoleon Hill", category: "Kỹ năng sống", year: 1937, cover: "https://picsum.photos/id/44/300/200", status: "available", desc: "Nguyên lý thành công vượt thời gian.", pages: 400, publisher: "NXB Tổng hợp" },
+        { id: 11, title: "Hành trình về phương Đông", author: "Baird T. Spalding", category: "Tâm lý", year: 1980, cover: "https://picsum.photos/id/50/300/200", status: "available", desc: "Khám phá tâm linh và triết lý phương Đông.", pages: 312, publisher: "NXB Tổng hợp" },
+        { id: 12, title: "Tuổi trẻ đáng giá bao nhiêu", author: "Rosie Nguyễn", category: "Kỹ năng sống", year: 2014, cover: "https://picsum.photos/id/52/300/200", status: "unavailable", desc: "Hành trang cho tuổi trẻ đầy nhiệt huyết.", pages: 256, publisher: "NXB Trẻ" },
+        { id: 13, title: "Bí mật tư duy triệu phú", author: "T. Harv Eker", category: "Kỹ năng sống", year: 2005, cover: "https://picsum.photos/id/55/300/200", status: "available", desc: "Thay đổi tư duy để đạt giàu có.", pages: 288, publisher: "NXB Lao động" },
+        { id: 14, title: "Cho tôi xin một vé đi tuổi thơ", author: "Nguyễn Nhật Ánh", category: "Tiểu thuyết", year: 2008, cover: "https://picsum.photos/id/57/300/200", status: "available", desc: "Ký ức tuổi thơ trong trẻo và buồn vui.", pages: 220, publisher: "NXB Kim Đồng" },
+        { id: 15, title: "Homo Deus", author: "Yuval Noah Harari", category: "Khoa học", year: 2015, cover: "https://picsum.photos/id/60/300/200", status: "available", desc: "Tương lai của nhân loại trong kỷ nguyên dữ liệu.", pages: 448, publisher: "NXB Thế giới" },
+        { id: 16, title: "Mắt biếc", author: "Nguyễn Nhật Ánh", category: "Tiểu thuyết", year: 1989, cover: "https://picsum.photos/id/62/300/200", status: "available", desc: "Chuyện tình đầu buồn đẹp thời học trò.", pages: 296, publisher: "NXB Trẻ" },
+        { id: 17, title: "Nói ít làm nhiều", author: "Ekman Paul", category: "Kỹ năng sống", year: 2020, cover: "https://picsum.photos/id/65/300/200", status: "unavailable", desc: "Hành động thực tế thay vì lời nói suông.", pages: 180, publisher: "NXB Phụ nữ" },
+        { id: 18, title: "Lịch sử loài người bằng tranh", author: "B. V. Điệp", category: "Lịch sử", year: 2022, cover: "https://picsum.photos/id/67/300/200", status: "available", desc: "Lịch sử thế giới qua tranh minh họa sinh động.", pages: 400, publisher: "NXB Giáo dục" },
+        { id: 19, title: "Tư duy nhanh và chậm", author: "Daniel Kahneman", category: "Tâm lý", year: 2011, cover: "https://picsum.photos/id/70/300/200", status: "available", desc: "Hai hệ thống tư duy kiểm soát hành vi con người.", pages: 512, publisher: "NXB Trí thức" },
+        { id: 20, title: "Thói quen nguyên tử", author: "James Clear", category: "Kỹ năng sống", year: 2018, cover: "https://picsum.photos/id/72/300/200", status: "available", desc: "Xây dựng thói quen nhỏ để thay đổi cuộc đời.", pages: 320, publisher: "NXB Lao động" },
+        { id: 21, title: "Viên ngọc quý nhất", author: "Nguyễn Nhật Ánh", category: "Tiểu thuyết", year: 2023, cover: "https://picsum.photos/id/75/300/200", status: "unavailable", desc: "Câu chuyện cảm động về tình bạn và gia đình.", pages: 350, publisher: "NXB Kim Đồng" },
+        { id: 22, title: "Vật lý lượng tử", author: "Brian Cox", category: "Khoa học", year: 2024, cover: "https://picsum.photos/id/78/300/200", status: "available", desc: "Giải mã thế giới lượng tử dễ hiểu.", pages: 280, publisher: "NXB Khoa học" }
+    ];
+
+    // State giỏ mượn: lưu danh sách các book id (chỉ mượn 1 cuốn mỗi loại)
+    let borrowCart = JSON.parse(localStorage.getItem("borrowCart")) || [];
+
+    // Helper: Lưu giỏ vào localStorage + cập nhật icon
+    function updateCartStorage() {
+        localStorage.setItem("borrowCart", JSON.stringify(borrowCart));
+        document.getElementById("cartCounter").innerText = borrowCart.length;
+    }
+
+    // Thêm sách vào giỏ (require login)
+    function addToCart(bookId) {
+        const book = booksData.find(b => b.id == bookId);
+        if (!book) return;
+        if (book.status !== "available") {
+            showToast("❌ Sách đã hết, không thể mượn!");
+            return;
+        }
+        if (!requireLogin()) return;
+        if (borrowCart.includes(bookId)) {
+            showToast("⚠️ Sách đã có trong danh sách mượn!");
+            return;
+        }
+        borrowCart.push(bookId);
+        updateCartStorage();
+        showToast(`📘 Đã thêm "${book.title}" vào giỏ mượn!`);
+        renderCartModal();
+        if (document.getElementById("cartModal").style.display === "flex") renderCartModal();
+    }
+
+    // Xóa khỏi giỏ
+    function removeFromCart(bookId) {
+        borrowCart = borrowCart.filter(id => id !== bookId);
+        updateCartStorage();
+        renderCartModal();
+        showToast("🗑 Đã xóa khỏi danh sách mượn");
+        // Nếu đang ở trang books, re-render để cập nhật nút mượn (không cần reload toàn bộ)
+        if (document.getElementById("booksPage").classList.contains("active-page")) renderBooksList();
+        if (document.getElementById("homePage").classList.contains("active-page")) renderFeaturedBooks();
+    }
+
+    // Xác nhận mượn
+    let borrowAddress = localStorage.getItem("borrowAddress") || "";
+    let borrowPhone = localStorage.getItem("borrowPhone") || "";
+
+    function confirmBorrow() {
+        if (borrowCart.length === 0) {
+            showToast("📭 Giỏ mượn trống, hãy thêm sách!");
+            return;
+        }
+        if (!requireLogin()) return;
+
+        // Hiển thị confirm modal với address/phone input
+        const confirmHtml = `
+            <div style="text-align: center;">
+                <h3>📦 Xác nhận mượn sách</h3>
+                <p><strong>${borrowCart.length} cuốn sách</strong> cho <strong>${currentUser.name}</strong></p>
+                <div style="margin: 1rem 0;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">📍 Địa chỉ nhận sách:</label>
+                    <input type="text" id="borrowAddressInput" value="${borrowAddress}" placeholder="VD: 123 Đường ABC, Quận 1, TP.HCM" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div style="margin: 1rem 0;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">📞 SĐT nhận thông báo:</label>
+                    <input type="tel" id="borrowPhoneInput" value="${borrowPhone}" placeholder="VD: 0123456789" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button onclick="cancelConfirmBorrow()" class="btn-sm" style="background: #6c757d; color: white;">Hủy</button>
+                    <button onclick="proceedBorrow()" class="btn-primary" style="padding: 10px 24px;">Xác nhận mượn</button>
+                </div>
+            </div>
+        `;
+
+        // Tạo confirm modal
+        let confirmModal = document.getElementById("confirmBorrowModal");
+        if (!confirmModal) {
+            confirmModal = document.createElement("div");
+            confirmModal.id = "confirmBorrowModal";
+            confirmModal.className = "modal";
+            confirmModal.innerHTML = `<div class="modal-content" id="confirmContent"></div>`;
+            document.body.appendChild(confirmModal);
+        }
+        document.getElementById("confirmContent").innerHTML = confirmHtml;
+        confirmModal.style.display = "flex";
+
+        // Focus inputs
+        setTimeout(() => {
+            document.getElementById("borrowAddressInput").focus();
+        }, 100);
+    }
+
+    function cancelConfirmBorrow() {
+        document.getElementById("confirmBorrowModal").style.display = "none";
+    }
+
+    function proceedBorrow() {
+        const address = document.getElementById("borrowAddressInput").value.trim();
+        const phone = document.getElementById("borrowPhoneInput").value.trim();
+
+        if (!address || !phone) {
+            showToast("❌ Vui lòng nhập đầy đủ địa chỉ và SĐT!");
+            return;
+        }
+
+        // Lưu info
+        borrowAddress = address;
+        borrowPhone = phone;
+        localStorage.setItem("borrowAddress", address);
+        localStorage.setItem("borrowPhone", phone);
+
+        // Xong!
+        showToast(`🎉 Mượn thành công ${borrowCart.length} cuốn sách!\n📍 Giao: ${address}\n📞 ${phone}`);
+        borrowCart = [];
+        updateCartStorage();
+        renderCartModal();
+        if (document.getElementById("booksPage").classList.contains("active-page")) renderBooksList();
+        if (document.getElementById("homePage").classList.contains("active-page")) renderFeaturedBooks();
+        document.getElementById("confirmBorrowModal").style.display = "none";
+        document.getElementById("cartModal").style.display = "none";
+    }
+
+    // Hiển thị modal giỏ
+    function renderCartModal() {
+        const container = document.getElementById("cartItemsList");
+        if (!container) return;
+        if (borrowCart.length === 0) {
+            container.innerHTML = `<div class="empty-cart"><i class="fas fa-book-open"></i> <p>Chưa có sách nào trong giỏ</p></div>`;
+            return;
+        }
+        let html = `<div style="margin-bottom: 8px;"><strong>Số lượng: ${borrowCart.length} cuốn</strong></div>`;
+        borrowCart.forEach(bookId => {
+            const book = booksData.find(b => b.id == bookId);
+            if (book) {
+                html += `
+                    <div class="cart-item">
+                        <div><strong>${book.title}</strong><br><small>${book.author}</small></div>
+                        <div><button class="btn-sm" onclick="removeFromCart(${book.id})">Xóa</button></div>
+                    </div>
+                `;
+            }
+        });
+        container.innerHTML = html;
+    }
+
+    // Toast thông báo
+    function showToast(msg) {
+        const toast = document.getElementById("toastMsg");
+        toast.innerText = msg;
+        toast.style.display = "block";
+        setTimeout(() => {
+            toast.style.display = "none";
+        }, 2000);
+    }
+
+    // Render sách nổi bật (lấy 6 cuốn đầu tiên hoặc random)
+    function renderFeaturedBooks() {
+        const featured = booksData.filter(b => b.status === "available").slice(0, 6);
+        const container = document.getElementById("featuredBooks");
+        if (!container) return;
+        container.innerHTML = featured.map(book => `
+            <div class="book-card">
+                <div class="book-cover" style="background-image: url('${book.cover}'); background-size: cover;"></div>
+                <div class="book-info">
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">${book.author} (${book.year})</div>
+                    <div class="book-status ${book.status === 'available' ? 'available' : 'unavailable'}">${book.status === 'available' ? '✅ Còn sách' : '❌ Hết'}</div>
+                    <div class="book-actions">
+                        <button class="btn-sm btn-borrow" onclick="addToCart(${book.id})">Mượn</button>
+                        <button class="btn-sm" onclick="showDetail(${book.id})">Chi tiết</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Hiển thị modal chi tiết sách
+    function showDetail(bookId) {
+        const book = booksData.find(b => b.id == bookId);
+        if (!book) return;
+        // Tạo modal tạm (nếu chưa có modal detail)
+        let detailModal = document.getElementById("detailModal");
+        if (!detailModal) {
+            const modalDiv = document.createElement("div");
+            modalDiv.id = "detailModal";
+            modalDiv.className = "modal";
+            modalDiv.innerHTML = `<div class="modal-content"><span class="close-modal" id="closeDetailModal">&times;</span><div id="detailContent"></div></div>`;
+            document.body.appendChild(modalDiv);
+            document.getElementById("closeDetailModal").onclick = () => modalDiv.style.display = "none";
+            window.onclick = (e) => { if (e.target === modalDiv) modalDiv.style.display = "none"; };
+            detailModal = modalDiv;
+        }
+        const detailHtml = `
+            <h3>📖 ${book.title}</h3>
+            <p><strong>Tác giả:</strong> ${book.author}</p>
+            <p><strong>Thể loại:</strong> ${book.category}</p>
+            <p><strong>Năm XB:</strong> ${book.year}</p>
+            <p><strong>Số trang:</strong> ${book.pages || 250}</p>
+            <p><strong>Nhà xuất bản:</strong> ${book.publisher || "NXB Tri thức"}</p>
+            <p><strong>Mô tả:</strong> ${book.desc}</p>
+            <p><strong>Trạng thái:</strong> ${book.status === 'available' ? 'Có sẵn' : 'Hết mượn'}</p>
+            <button class="btn-primary" style="margin-top: 12px;" onclick="addToCart(${book.id}); document.getElementById('detailModal').style.display='none'">📥 Mượn sách</button>
+        `;
+        document.getElementById("detailContent").innerHTML = detailHtml;
+        detailModal.style.display = "flex";
+    }
+
+    // Lọc + tìm kiếm sách
+    let currentFilter = "all";
+    let currentSearch = "";
+    function renderBooksList() {
+        let filtered = booksData.filter(book => {
+            const matchCat = currentFilter === "all" || book.category === currentFilter;
+            const matchSearch = book.title.toLowerCase().includes(currentSearch.toLowerCase());
+            return matchCat && matchSearch;
+        });
+        const container = document.getElementById("allBooksGrid");
+        if (!container) return;
+        if (filtered.length === 0) {
+            container.innerHTML = `<div style="grid-column:1/-1; text-align:center;">Không tìm thấy sách nào 🥺</div>`;
+            return;
+        }
+        container.innerHTML = filtered.map(book => `
+            <div class="book-card">
+                <div class="book-cover" style="background-image: url('${book.cover}'); background-size: cover;"></div>
+                <div class="book-info">
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">${book.author} (${book.year})</div>
+                    <div class="book-status ${book.status === 'available' ? 'available' : 'unavailable'}">${book.status === 'available' ? '✅ Còn sách' : '❌ Hết'}</div>
+                    <div class="book-actions">
+                        <button class="btn-sm btn-borrow" onclick="addToCart(${book.id})">Mượn</button>
+                        <button class="btn-sm" onclick="showDetail(${book.id})">Chi tiết</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Hàm điều hướng trang
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active-page'));
+        document.getElementById(`${pageId}Page`).classList.add('active-page');
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        document.querySelector(`.nav-link[data-page="${pageId}"]`).classList.add('active');
+        if (pageId === 'books') { renderBooksList(); }
+        if (pageId === 'home') { renderFeaturedBooks(); }
+    }
+
+    // Event listeners
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const page = link.dataset.page;
+            showPage(page);
+        });
+    });
+    document.getElementById("exploreBtn")?.addEventListener("click", () => showPage('books'));
+    document.getElementById("cartIcon")?.addEventListener("click", () => {
+        renderCartModal();
+        document.getElementById("cartModal").style.display = "flex";
+    });
+    document.getElementById("closeCartModal")?.addEventListener("click", () => document.getElementById("cartModal").style.display = "none");
+    document.getElementById("confirmBorrowBtn")?.addEventListener("click", confirmBorrow);
+    window.addEventListener("click", (e) => { if (e.target === document.getElementById("cartModal")) document.getElementById("cartModal").style.display = "none"; });
+
+    // Lọc & tìm kiếm books
+    const searchInput = document.getElementById("searchInput");
+    const categoryFilter = document.getElementById("categoryFilter");
+    if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+            currentSearch = e.target.value;
+            renderBooksList();
+        });
+    }
+    if (categoryFilter) {
+        categoryFilter.addEventListener("change", (e) => {
+            currentFilter = e.target.value;
+            renderBooksList();
+        });
+    }
+
+    // Event listeners cho auth
+    document.getElementById('loginBtn')?.addEventListener('click', () => document.getElementById('loginModal').style.display = 'flex');
+    document.getElementById('registerBtn')?.addEventListener('click', () => {
+        document.getElementById('loginModal').style.display = 'none';
+        document.getElementById('registerModal').style.display = 'flex';
+    });
+
+    document.getElementById('loginForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const user = users.find(u => u.email === email && u.password === password);
+        if (user) {
+            currentUser = user;
+            isLoggedIn = true;
+            localStorage.setItem("currentUser", JSON.stringify(user));
+            updateAuthUI();
+            document.getElementById('loginModal').style.display = 'none';
+            showToast(`👋 Chào ${user.name}!`);
+        } else {
+            showToast("❌ Email hoặc mật khẩu không đúng!");
+        }
+    });
+
+    document.getElementById('registerForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        // Check if email exists
+        if (users.find(u => u.email === email)) {
+            showToast("❌ Email đã tồn tại!");
+            return;
+        }
+        const newUser = { id: users.length + 1, name, email, password };
+        users.push(newUser);
+        currentUser = newUser;
+        isLoggedIn = true;
+        localStorage.setItem("currentUser", JSON.stringify(newUser));
+        updateAuthUI();
+        document.getElementById('registerModal').style.display = 'none';
+        showToast(`🎉 Đăng ký thành công, chào ${name}!`);
+    });
+
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        currentUser = null;
+        isLoggedIn = false;
+        localStorage.removeItem("currentUser");
+        borrowCart = [];
+        updateCartStorage();
+        updateAuthUI();
+        showToast("👋 Đã đăng xuất!");
+    });
+
+    // Close modals
+    document.getElementById('closeLoginModal')?.addEventListener('click', () => document.getElementById('loginModal').style.display = 'none');
+    document.getElementById('closeRegisterModal')?.addEventListener('click', () => document.getElementById('registerModal').style.display = 'none');
+    document.getElementById('switchToRegister')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('loginModal').style.display = 'none';
+        document.getElementById('registerModal').style.display = 'flex';
+    });
+    document.getElementById('switchToLogin')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('registerModal').style.display = 'none';
+        document.getElementById('loginModal').style.display = 'flex';
+    });
+
+    // Khởi tạo ban đầu
+    updateAuthUI();
+    renderFeaturedBooks();
+    updateCartStorage();
+    // đóng modal khi click ngoài
+    window.onclick = function(e) { 
+        const modal = document.getElementById("cartModal");
+        if (e.target === modal) modal.style.display = "none";
+        const detailModal = document.getElementById("detailModal");
+        if (detailModal && e.target === detailModal) detailModal.style.display = "none";
+        const loginModal = document.getElementById("loginModal");
+        if (loginModal && e.target === loginModal) loginModal.style.display = "none";
+        const registerModal = document.getElementById("registerModal");
+        if (registerModal && e.target === registerModal) registerModal.style.display = "none";
+    };
+    // đảm bảo renderBooksList có data sẵn
+    renderBooksList();
+</script>
+</body>
+</html>
